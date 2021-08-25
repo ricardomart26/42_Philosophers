@@ -51,6 +51,17 @@ t_philo	p;
 
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
+void	init_philo(t_philo *p, char **av, int ac);
+long	calculate_time(long	time);
+long	get_time();
+void	give_forks(t_philo *p, int id);
+void	put_to_sleep(t_philo *p, int id);
+void	think(t_philo *p, int id);
+
+
+
+
+
 
 
 #endif
