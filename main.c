@@ -4,7 +4,8 @@ void	assign_fork(t_philo *p, int fork1, int fork2, int id)
 {
 	p->forks[fork1] = 1;
 	p->forks[fork2] = 1;
-	p->philo[id] = 1;
+	p->philo[id].st = eating;
+	usleep(p->time_to_eat);
 }
 
 void	give_forks(t_philo *p, int id)
@@ -12,22 +13,16 @@ void	give_forks(t_philo *p, int id)
 	int i;
 	i = -1;
 	if (id == 0)
-	{
-		// printf("id %d\n", id);
 		if (p->forks[0] == 0 && p->forks[p->nmr_p - 1] == 0)
 			assign_fork(p, 0, id, id);
-	}
 	else
-	{
-		// printf("id %d\n", id);
 		if (p->forks[id - 1] == 0 && p->forks[id] == 0)
 			assign_fork(p, id - 1, id, id);
-	}
 }
 
 void	put_to_sleep(t_philo *p, int id)
 {
-	if (p->philo[id] == 0)
+	if (p->philo[id].st == eating)
 	{
 		if (id == 0)
 		{
@@ -39,23 +34,24 @@ void	put_to_sleep(t_philo *p, int id)
 			p->forks[id] = 0;
 			p->forks[id - 1] = 0;
 		}
-		p->philo[id] = 3;
+		p->philo[id].st = sleeping;
+		usleep(p->time_to_sleep);
 	}
 }
 
 void	think(t_philo *p, int id)
 {
-	if (p->philo[id] == 3)
-		p->philo[id] = 2;
+	if (p->philo[id].st == sleeping)
+		p->philo[id].st = thinking;
 }
 
-void	print_states(int id, int state, int time)
+void	print_states(int id, t_state st, int time)
 {
-	if (state == 1)
+	if (st == eating)
 		printf("%d: philo %d is eating\n", time, id);
-	else if (state == 2)
+	else if (st == sleeping)
 		printf("%d: philo %d is thinking\n", time, id);
-	else if (state == 3)
+	else if (st == thinking)
 		printf("%d: philo %d is sleeping\n", time, id);
 }
 
@@ -69,7 +65,6 @@ long	get_time()
 	return (time);
 }
 
-// int	id =  0;
 long	calculate_time(long	time)
 {
 	long time2;
@@ -80,33 +75,48 @@ long	calculate_time(long	time)
 	return (diff);
 }
 
-
 void	*main_funct(void	*arg)
 {
-	int done;
 	long time;
 	long timediff;
 	int id;
+	t_state en;
 
 	id = *(int*)arg;
 	time = get_time();
-	done = 0;
+
+
+	printf("id %d\n", id);
+	pthread_mutex_lock( &p.lock );
+
+	give_forks(&p, id);
+	put_to_sleep(&p, id);
+	think(&p, id);
+
+	timediff = calculate_time(time);
+	pthread_mutex_unlock(&p.lock);
+	print_states(id, p.philo[id].st, timediff);
 
 	while (!p.is_dead)
 	{
-		printf("id %d\n", id);
+		// printf("id %d\n", id);
 		pthread_mutex_lock( &p.lock );
-
-		think(&p, id);
-		give_forks(&p, id);
-		put_to_sleep(&p, id);
-
+		// if (p.philo[id].st == eating)
+		// 	stop_eating(&p, id);
+		if (p.philo[id].st != sleeping)
+			put_to_sleep(&p, id);
+		if (p.philo[id].st != eating)
+			give_forks(&p, id);
+		if (p.philo[id].st != thinking)
+			think(&p, id);
+		
 		timediff = calculate_time(time);
 		pthread_mutex_unlock(&p.lock);
+		
 		sleep(2);
-		print_states(id, p.philo[id], timediff);
-		return (NULL);
+		print_states(id, p.philo[id].st, timediff);
 	}
+	return (NULL);
 }
 
 void	init_philo(t_philo *p, char **av, int ac)
@@ -120,7 +130,7 @@ void	init_philo(t_philo *p, char **av, int ac)
 	p->time_to_die = ft_atoi(av[2]);
 	p->time_to_eat = ft_atoi(av[3]);
 	p->time_to_sleep = ft_atoi(av[4]);
-	p->forks = malloc(p->nmr_p * sizeof(bool));
+	p->forks = malloc(p->nmr_p * sizeof(bool) + 1);
 	if (ac == 6)
 		p->how_many_times_to_eat = ft_atoi(av[5]);
 	p->how_many_times_to_eat = 0;
@@ -130,6 +140,7 @@ void	init_philo(t_philo *p, char **av, int ac)
 	p->lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	i = -1;
 	time = get_time();
+	printf("teste\n");
 	while (++i < p->nmr_p)
 	{
 		p->philo[i].id = i;
@@ -137,18 +148,17 @@ void	init_philo(t_philo *p, char **av, int ac)
 		p->philo[i].lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 		p->philo[i].last_eat = time;
 		p->philo[i].total_eat = 0;
-	}	
+		p->philo[i].st = scratch_bals;
+	}
+	printf("teste\n");
 }
 
-int counter = 0;
 
 int main(int ac, char **av)
 {
 	int i;
 	int done;
-	int X;
 
-	x = 0;
 	done = 0;
 	if (ac < 5)
 		printf("\tERRO\n\n\tUsage: ./philo nbr_of_philo time_to_die time_to_eat time_to_sleep [optional: nbr_of_times_philo_must_eat");
@@ -158,11 +168,11 @@ int main(int ac, char **av)
 	i = -1;
 	while (++i < p.nmr_p)
 	{
-		p.forks[i] = -1;
+		p.forks[i] = 0;
 		printf("i %d\n", i);
 		pthread_create(&p.philo[i].t, NULL, main_funct, &p.philo[i].id);
 	}
 	i = -1;
 	while (++i < p.nmr_p)
-		pthread_join(p.t[i], NULL);
+		pthread_join(p.philo[i].t, NULL);
 }

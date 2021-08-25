@@ -10,17 +10,26 @@
 # define THREAD_LIMIT 100
 
 
+typedef enum s_state
+{
+	scratch_bals,
+	eating,
+	sleeping,
+	thinking
+} t_state;
+
 typedef struct s_info
 {
 	int id;
 	pthread_t t;
+	int state;
 	int last_eat;
 	int total_eat;
+	t_state st;
 	pthread_mutex_t lock;
 	pthread_mutex_t lock_write;
 } t_info;
 
-t_philo	p;
 
 
 typedef struct s_philo
@@ -36,9 +45,9 @@ typedef struct s_philo
 	int	nmr_p;
 	bool *forks;
 	struct timeval time;
-
 } t_philo;
 
+t_philo	p;
 
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
