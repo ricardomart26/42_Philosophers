@@ -10,12 +10,7 @@ NAME = philo
 
 
 $(NAME): $(OBJ)
-	ifeq ($(UNAME), Linux)
-		$(CC) $(OBJ) -lpthread -o $@
-	endif
-	ifeq ($(UNAME), macOs)
-		$(CC) $(OBJ) -o $@
-	endif
+	$(CC) $(SRC) -o $(NAME)
 
 all: $(NAME)
 

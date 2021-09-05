@@ -22,7 +22,6 @@ void	init_philo(t_philo *p, char **av, int ac)
 	p->lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	i = -1;
 	time = get_time();
-	printf("teste\n");
 	while (++i < p->nmr_p)
 	{
 		p->philo[i].id = i;
@@ -30,7 +29,6 @@ void	init_philo(t_philo *p, char **av, int ac)
 		p->philo[i].lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 		p->philo[i].last_eat = time;
 		p->philo[i].total_eat = 0;
-		p->philo[i].st = scratch_bals;
+		p->philo[i].st = scratch_balls;
 	}
-	printf("teste\n");
 }

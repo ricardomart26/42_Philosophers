@@ -12,7 +12,7 @@
 
 typedef enum s_state
 {
-	scratch_bals,
+	scratch_balls,
 	eating,
 	sleeping,
 	thinking
@@ -22,7 +22,6 @@ typedef struct s_info
 {
 	int id;
 	pthread_t t;
-	int state;
 	int last_eat;
 	int total_eat;
 	t_state st;
@@ -49,12 +48,13 @@ typedef struct s_philo
 
 t_philo	p;
 
+void	stop_eating(t_philo *p, int id, long time);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 void	init_philo(t_philo *p, char **av, int ac);
 long	calculate_time(long	time);
 long	get_time();
-void	give_forks(t_philo *p, int id);
+void	give_forks(t_philo *p, int id, long time);
 void	put_to_sleep(t_philo *p, int id);
 void	think(t_philo *p, int id);
 
