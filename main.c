@@ -1,56 +1,63 @@
 #include "philo.h"
-#include <semaphore.h>
 
-void	print_states(int id, t_state st, int time)
+#define PRINT_VAR(X) printf(#X " is %ld and the address is %p\n", X, &X);
+
+void	print_states(int id, t_state st, long time)
 {
 	if (st == eating)
-		printf("%d: philo %d is eating\n", time, id);
+		printf("%ld: %d is eating\n", time, id);
 	else if (st == sleeping)
-		printf("%d: philo %d is thinking\n", time, id);
+		printf("%ld: %d is sleeping\n", time, id);
 	else if (st == thinking)
-		printf("%d: philo %d is sleeping\n", time, id);
+		printf("%ld: %d is thinking\n", time, id);
 	else if (st == scratch_balls)
-		printf("%d: philo %d is scratching balls\n", time, id);
+		printf("%ld: %d is scratching balls\n", time, id);
 }
 
+void	write_states(t_info p, long timediff)
+{
+	pthread_mutex_lock(&p.lock_write);
+	print_states(p.id, p.st, timediff);
+	pthread_mutex_unlock(&p.lock_write);
+}
+
+void	first_values(t_info *p, long *timediff, long time)
+{
+	while (p->st != is_dead)
+	{
+		give_forks(p, 0);
+		if (p->st == eating)
+			stop_eating(p, time);
+		if (p->st == sleeping)
+			think(p, time);
+		*timediff = calculate_time(time);
+	}
+}
 
 void	*main_funct(void	*arg)
 {
 	long time;
 	long timediff;
-	int id;
-
-	id = *(int*)arg;
+	t_info philo;
+	
+	philo = *(t_info *)arg;
 	time = get_time();
-
-
-	printf("id %d\n", id);
-	pthread_mutex_lock( &p.lock );
-	give_forks(&p, id, 0);
-	if (p.philo[id].st == scratch_balls)
-		put_to_sleep(&p, id);
-	think(&p, id);
-
-	timediff = calculate_time(time);
-	pthread_mutex_unlock(&p.lock);
-	print_states(id, p.philo[id].st, timediff);
+	PRINT_VAR(time);
 	sleep(3);
-	while (!p.is_dead)
+	first_values(&philo, &timediff, time);
+	sleep(3);
+	write_states(philo, timediff);
+	while (philo.st != is_dead)
 	{
-		// printf("id %d\n", id);
-		pthread_mutex_lock( &p.lock );
-		if (p.philo[id].st == eating)
-			stop_eating(&p, id, timediff);
-		if (p.philo[id].st == thinking)
-			give_forks(&p, id, timediff);
-		// if (p.philo[id].st != sleeping)
-		// 	put_to_sleep(&p, id);
-		if (p.philo[id].st != thinking)
-			think(&p, id);
+		if (philo.st == eating)
+			stop_eating(&philo, timediff);
+		else if (philo.st == thinking)
+			give_forks(&philo, timediff);
+		else if (philo.st == sleeping)
+			philo.st = thinking;
 		timediff = calculate_time(time);
-		pthread_mutex_unlock(&p.lock);
 		sleep(2);
-		print_states(id, p.philo[id].st, timediff);
+		print_states(philo.id, philo.st, timediff);
 	}
 	return (NULL);
 }
@@ -58,17 +65,16 @@ void	*main_funct(void	*arg)
 int main(int ac, char **av)
 {
 	int i;
+	t_philo p;
 
 	if (ac < 5)
 		printf("\tERRO\n\n\tUsage: ./philo nbr_of_philo time_to_die time_to_eat time_to_sleep [optional: nbr_of_times_philo_must_eat");
-	if (ac == 6)
-		p.how_many_times_to_eat = ft_atoi(av[5]);
 	init_philo(&p, av, ac);
 	i = -1;
 	while (++i < p.nmr_p)
 	{
 		p.forks[i] = 0;
-		pthread_create(&p.philo[i].t, NULL, main_funct, &p.philo[i].id);
+		pthread_create(&p.philo[i].t, NULL, main_funct, &p.philo[i]);
 	}
 	i = -1;
 	while (++i < p.nmr_p)

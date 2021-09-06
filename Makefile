@@ -8,7 +8,6 @@ OBJ = $(SRC:.c=.o)
 
 NAME = philo
 
-
 $(NAME): $(OBJ)
 	$(CC) $(SRC) -o $(NAME)
 

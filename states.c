@@ -1,92 +1,72 @@
 #include "philo.h"
 
-static	void	remove_fork(t_philo *p, int fork1, int fork2, int id)
+static	void	remove_fork(t_info *p, long time)
 {
-	p->forks[fork1] = 0;
-	p->forks[fork2] = 0;
-	p->philo[id].st = sleeping;
+	*p->fork_left = false;
+	*p->fork_right = false;
+	p->st = sleeping;
+	printf("%ld: %d is sleeping\n", time, p->id);
 	usleep(p->time_to_eat);
 }
 
-void	stop_eating(t_philo *p, int id, long time)
+void	stop_eating(t_info *p, long time)
 {
-	if (id == 0)
-	{
-		if (p->forks[0] == 1 && p->forks[p->nmr_p - 1] == 1)
-		{
-			remove_fork(p, 0, id, id);
-			printf("%ld: %d has released a fork\n", time, id);
-			printf("%ld: %d has released a fork\n", time, id);
-			usleep(p->time_to_sleep);
-		}
-	}
-	else
-	{
-		if (p->forks[id - 1] == 1 && p->forks[id] == 1)
-		{
-			remove_fork(p, id - 1, id, id);
-			printf("%ld: %d has released a fork\n", time, id);
-			printf("%ld: %d has released a fork\n", time, id);
-			usleep(p->time_to_sleep);
-		}
-	}
-}
+	(void)time;
 
-
-static	void	assign_fork(t_philo *p, int fork1, int fork2, int id)
-{
-	p->forks[fork1] = 1;
-	p->forks[fork2] = 1;
-	p->philo[id].st = eating;
-	usleep(p->time_to_eat);
-}
-
-void	give_forks(t_philo *p, int id, long time)
-{
-	if (id == 0)
+	if (*p->fork_left == true && *p->fork_right == true)
 	{
-		if (p->forks[0] == 0 && p->forks[p->nmr_p - 1] == 0)
-		{
-			assign_fork(p, 0, id, id);
-			printf("%ld: %d has taken a fork\n", time, id);
-			printf("%ld: %d has taken a fork\n", time, id);
-			usleep(p->time_to_sleep);
-		}
-	}
-	else
-	{
-		if (p->forks[id - 1] == 0 && p->forks[id] == 0)
-		{
-			assign_fork(p, id - 1, id, id);
-			printf("%ld: %d has taken a fork\n", time, id);
-			printf("%ld: %d has taken a fork\n", time, id);
-			usleep(p->time_to_sleep);
-		}
-	}
-}
-
-void	put_to_sleep(t_philo *p, int id)
-{
-	if (p->philo[id].st == eating || p->philo[id].st == scratch_balls)
-	{
-		if (id == 0)
-		{
-			p->forks[id] = 0;
-			p->forks[p->nmr_p - 1] = 0;
-		}
-		else
-		{
-			p->forks[id] = 0;
-			p->forks[id - 1] = 0;
-		}
-		p->philo[id].st = sleeping;
+		printf("%ld: %d has released a fork\n", time, p->id);
+		printf("%ld: %d has released a fork\n", time, p->id);
+		remove_fork(p, time);
 		usleep(p->time_to_sleep);
 	}
 }
 
-void	think(t_philo *p, int id)
+
+static	void	assign_fork(t_info *p)
 {
-	if (p->philo[id].st == sleeping)
-		p->philo[id].st = thinking;
+	*p->fork_left = true;
+	*p->fork_right = true;
+	p->st = eating;
+	usleep(p->time_to_eat);
 }
 
+void	give_forks(t_info *p, long time)
+{
+	(void)time;
+	pthread_mutex_lock(&p->lock);
+	if (*p->fork_left == false && *p->fork_right == false)
+	{
+		assign_fork(p);
+		printf("%ld: %d has taken a fork\n", time, p->id);
+		printf("%ld: %d has taken a fork\n", time, p->id);
+		pthread_mutex_unlock(&p->lock);
+		usleep(p->time_to_eat);
+	}
+}
+
+// void	put_to_sleep(t_info *p)
+// {
+// 	if (p->st == eating || p->st == scratch_balls)
+// 	{
+// 		if (p->id == 0)
+// 		{
+// 			p->forks[p->id] = 0;
+// 			p->forks[p->nmr_p - 1] = 0;
+// 		}
+// 		else
+// 		{
+// 			p->forks[p->id] = 0;
+// 			p->forks[p->id - 1] = 0;
+// 		}
+// 		p->st = sleeping;
+// 		usleep(p->time_to_sleep);
+// 	}
+// }
+
+void	think(t_info *p, long time)
+{
+	(void)time;
+	p->st = thinking;
+	// sleep(p->time_to_sleep);
+}
