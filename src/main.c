@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
+/*   Updated: 2021/09/08 05:58:15 by rimartin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 #define PRINT_VAR(X) printf(#X " is %ld and the address is %p\n", X, &X);
@@ -25,12 +37,14 @@ void	first_values(t_info *p, long *timediff, long time)
 {
 	while (p->st != is_dead)
 	{
-		give_forks(p, 0);
+		while (p->st != eating)
+			give_forks(p, 0);
 		if (p->st == eating)
 			stop_eating(p, time);
 		if (p->st == sleeping)
 			think(p, time);
 		*timediff = calculate_time(time);
+		sleep(3);
 	}
 }
 
@@ -42,8 +56,6 @@ void	*main_funct(void	*arg)
 	
 	philo = *(t_info *)arg;
 	time = get_time();
-	PRINT_VAR(time);
-	sleep(3);
 	first_values(&philo, &timediff, time);
 	sleep(3);
 	write_states(philo, timediff);
@@ -56,8 +68,8 @@ void	*main_funct(void	*arg)
 		else if (philo.st == sleeping)
 			philo.st = thinking;
 		timediff = calculate_time(time);
-		sleep(2);
 		print_states(philo.id, philo.st, timediff);
+		sleep(2);
 	}
 	return (NULL);
 }

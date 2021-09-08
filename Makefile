@@ -1,22 +1,27 @@
 CC = gcc -Wall -Werror -Wextra
 
-UNAME := $(shell uname)
+SRC = $(wildcard src/*.c)
 
-SRC = $(wildcard *.c)
+INC = include/philo.h 
 
 OBJ = $(SRC:.c=.o)
 
 NAME = philo
 
 $(NAME): $(OBJ)
-	$(CC) $(SRC) -o $(NAME)
+	$(MAKE) bonus -C libft
+	mv libft/libft.a .
+	$(CC) $(OBJ) -I -L$(INC) libft.a -o $(NAME)
 
 all: $(NAME)
 
 clean:
+	$(MAKE) clean -C libft
 	rm -f $(OBJ)
 
 fclean: clean
-	rm -f $(NAME) 
+	$(MAKE) fclean -C libft
+	rm -f libft.a
+	rm -f $(NAME)
 
 re: fclean all

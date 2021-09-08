@@ -7,9 +7,9 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <stdlib.h>
+# include "libft/libft.h"
+
 # define THREAD_LIMIT 100
-
-
 
 typedef enum s_state
 {
@@ -36,6 +36,7 @@ typedef struct s_info
 	t_state st;
 	pthread_mutex_t lock;
 	pthread_mutex_t lock_write;
+	pthread_mutex_t lock2;
 } t_info;
 
 typedef struct s_philo

@@ -15,6 +15,7 @@ void	init_philo(t_philo *p, char **av, int ac)
 	p->forks = malloc(p->nmr_p * sizeof(bool) + 1);
 	p->philo->lock = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	p->philo->lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	p->philo->lock2 = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	i = -1;
 	time = get_time();
 	while (++i < p->nmr_p)
