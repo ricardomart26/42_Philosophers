@@ -35,6 +35,7 @@ typedef struct s_info
 	bool *fork_right;
 	t_state st;
 	pthread_mutex_t lock;
+	pthread_mutex_t kill;
 	pthread_mutex_t lock_write;
 	pthread_mutex_t lock2;
 } t_info;

@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/08 05:58:09 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/08 11:05:09 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	stop_eating(t_info *p, long time)
 	}
 }
 
-
 static	void	assign_fork(t_info *p)
 {
 	*p->fork_left = true;
@@ -47,7 +46,11 @@ static	void	assign_fork(t_info *p)
 
 void	give_forks(t_info *p, long time)
 {
-	// printf("id %d\n", p->id);
+	if (p->time_to_die < p->time_to_eat + p->time_to_sleep)
+	{
+		p->st = is_dead;
+		return ;
+	}
 	pthread_mutex_lock(&p->lock);
 	if (*p->fork_left == false && *p->fork_right == false)
 	{

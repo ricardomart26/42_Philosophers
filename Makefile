@@ -2,16 +2,16 @@ CC = gcc -Wall -Werror -Wextra
 
 SRC = $(wildcard src/*.c)
 
-INC = include/philo.h 
 
+INC = include/
 OBJ = $(SRC:.c=.o)
 
 NAME = philo
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(INC)
 	$(MAKE) bonus -C libft
 	mv libft/libft.a .
-	$(CC) $(OBJ) -I -L$(INC) libft.a -o $(NAME)
+	$(CC) $(OBJ) -I$(INC) libft.a -o $(NAME)
 
 all: $(NAME)
 
