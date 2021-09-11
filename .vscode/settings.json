@@ -2,6 +2,7 @@
 	"files.associations": {
 		"locale": "c",
 		"string": "c",
-		"__locale": "c"
+		"__locale": "c",
+		"philo.h": "c"
 	}
 }

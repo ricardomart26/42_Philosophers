@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/08 11:05:09 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/11 23:00:00 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,11 @@ void	remove_fork(t_info *p)
 
 void	stop_eating(t_info *p, long time)
 {
-	(void)time;
-
 	if (*p->fork_left == true && *p->fork_right == true)
 	{
-		// printf("%ld: %d has released a fork\n", time, p->id);
-		// printf("%ld: %d has released a fork\n", time, p->id);
 		remove_fork(p);
 		printf("%ld: %d is sleeping\n", time, p->id);
 		usleep(p->time_to_sleep);
-
 	}
 }
 
