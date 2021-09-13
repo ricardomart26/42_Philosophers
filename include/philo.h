@@ -11,6 +11,11 @@
 # define PRINT_VAR(X) printf(#X " is %ld and the address is %p\n", X, &X);
 # define THREAD_LIMIT 100
 
+pthread_mutex_t g_lock;
+pthread_mutex_t g_lock_write;
+pthread_mutex_t g_lock2;
+pthread_mutex_t g_write_kill;
+
 typedef enum s_state
 {
 	scratch_balls,
@@ -30,13 +35,10 @@ typedef struct s_info
 	int 			time_to_die;
 	int				how_many_times_to_eat;
 	int 			time_to_eat;
-	bool 			*fork_left;
-	bool 			*fork_right;
+	pthread_mutex_t fork_left;
+	pthread_mutex_t fork_rigth;
 	t_state 		st;
-	pthread_mutex_t	lock;
-	pthread_mutex_t	kill;
-	pthread_mutex_t	lock_write;
-	pthread_mutex_t	lock2;
+	long			start_time;
 } t_info;
 
 typedef struct s_philo
@@ -47,14 +49,14 @@ typedef struct s_philo
 	struct timeval	time;
 } t_philo;
 
-void	stop_eating(t_info *p, long time);
+void	stop_eating(t_info *p);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 void	init_philo(t_philo *p, char **av, int ac);
 long	calculate_time(long	time);
 long	get_time(void);
-void	give_forks(t_info *p, long time);
+void	give_forks(t_info *p);
 void	put_to_sleep(t_info *p);
-void	think(t_info *p, long time);
+void	think(t_info *p);
 
 #endif

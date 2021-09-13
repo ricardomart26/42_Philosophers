@@ -3,6 +3,7 @@
 		"locale": "c",
 		"string": "c",
 		"__locale": "c",
-		"philo.h": "c"
+		"philo.h": "c",
+		"optional": "c"
 	}
 }

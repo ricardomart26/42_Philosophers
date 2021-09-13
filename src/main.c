@@ -6,81 +6,65 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/11 23:08:16 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/13 16:04:31 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	g_kill = 0;
+int	g_kill;
 
-void	print_states(int id, t_state st, long time)
+void	print_states(int id, t_state st)
 {
 	if (st == eating)
-		printf("%ld: %d is eating\n", time, id);
+		printf("%ld: %d is eating\n", get_time(), id);
 	else if (st == sleeping)
-		printf("%ld: %d is sleeping\n", time, id);
+		printf("%ld: %d is sleeping\n", get_time(), id);
 	else if (st == thinking)
-		printf("%ld: %d is thinking\n", time, id);
+		printf("%ld: %d is thinking\n", get_time(), id);
 	else if (st == scratch_balls)
-		printf("%ld: %d is scratching balls\n", time, id);
+		printf("%ld: %d is scratching balls\n", get_time(), id);
 }
 
-void	write_states(t_info p, long timediff)
+void	write_states(t_info p)
 {
-	pthread_mutex_lock(&p.lock_write);
-	print_states(p.id, p.st, timediff);
-	pthread_mutex_unlock(&p.lock_write);
+	pthread_mutex_lock(&g_lock_write);
+	print_states(p.id, p.st);
+	pthread_mutex_unlock(&g_lock_write);
 }
 
-void	first_values(t_info *p, long *timediff, long time)
+void	first_values(t_info *philo)
 {
-	while (p->st != is_dead)
+	while (philo->st != is_dead)
 	{
-		while (p->st != eating)
-			give_forks(p, 0);
+		printf("teste 0\n");	
+		while (philo->st != eating)
+			give_forks(philo);
 		if (g_kill == 1)
 			return ;
-		if (p->st == eating)
-			stop_eating(p, time);
-		if (p->st == sleeping)
-			think(p, time);
-		*timediff = calculate_time(time);
+		printf("teste 2\n");	
+		if (philo->st == eating)
+			stop_eating(philo);
+		if (philo->st == sleeping)
+			think(philo);
+		printf("teste 1\n");	
 		sleep(3);
 	}
 }
 
 void	*main_funct(void	*arg)
 {
-	static long	time;
-	long		timediff;
 	t_info		philo;
 
 	philo = *(t_info *)arg;
-	time = get_time();
-	first_values(&philo, &timediff, time);
+	first_values(&philo);
 	if (g_kill == 1)
 		return (NULL);
-	sleep(3);
-	write_states(philo, timediff);
-	while (philo.st != is_dead)
-	{
-		if (philo.st == eating)
-			stop_eating(&philo, timediff);
-		else if (philo.st == thinking)
-			give_forks(&philo, timediff);
-		else if (philo.st == sleeping)
-			philo.st = thinking;
-		timediff = calculate_time(time);
-		print_states(philo.id, philo.st, timediff);
-		sleep(2);
-	}
 	return (NULL);
 }
 
 void	free_all(t_info **p, bool **forks)
 {
-
 	free(forks);
 	free(*p);
 }
