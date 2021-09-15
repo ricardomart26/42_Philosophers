@@ -11,6 +11,7 @@
 # define PRINT_VAR(X) printf(#X " is %ld and the address is %p\n", X, &X);
 # define THREAD_LIMIT 100
 
+struct timeval start_time;
 pthread_mutex_t g_lock;
 pthread_mutex_t g_lock_write;
 pthread_mutex_t g_lock2;
@@ -35,8 +36,8 @@ typedef struct s_info
 	int 			time_to_die;
 	int				how_many_times_to_eat;
 	int 			time_to_eat;
-	pthread_mutex_t fork_left;
-	pthread_mutex_t fork_rigth;
+	bool			*fork_left;
+	bool			*fork_rigth;
 	t_state 		st;
 	long			start_time;
 } t_info;

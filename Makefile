@@ -23,9 +23,7 @@ OBJ = $(SRC:%.c=%.o)
 	
 $(NAME): $(DEPS) $(OBJ)
 	$(MAKE) bonus -C libft
-	# mv libft/libft.a .
 	$(CC) $(INC) -o $(NAME) $(OBJ) $(LIBS)
-	# $(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
 
 
 all: $(NAME)

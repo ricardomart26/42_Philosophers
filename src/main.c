@@ -6,13 +6,21 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/13 16:04:31 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/15 22:11:51 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int	g_kill;
+
+long	get_start_time()
+{
+	struct	timeval beg;
+	
+	gettimeofday(&beg, NULL);
+	
+}
 
 void	print_states(int id, t_state st)
 {
@@ -35,20 +43,23 @@ void	write_states(t_info p)
 
 void	first_values(t_info *philo)
 {
+	long	start_time;
+
+	start_time = get_start_time();
 	while (philo->st != is_dead)
 	{
-		printf("teste 0\n");	
 		while (philo->st != eating)
+		{
 			give_forks(philo);
+			if (philo->st != eating)
+				printf("philo %d still waiting\n", philo->id);	
+		}
 		if (g_kill == 1)
 			return ;
-		printf("teste 2\n");	
 		if (philo->st == eating)
 			stop_eating(philo);
 		if (philo->st == sleeping)
 			think(philo);
-		printf("teste 1\n");	
-		sleep(3);
 	}
 }
 

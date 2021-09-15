@@ -6,27 +6,13 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/09 02:41:45 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/13 15:47:57 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/13 23:02:09 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int	g_kill = 0;
-
-// void	init_forks(int i, t_info **philo, int last, t_philo *p)
-// {
-// 	if (i == 0)
-// 	{
-// 		philo[i]->fork_left = p->forks[i];
-// 		philo[i]->fork_right = p->forks[last];
-// 	}
-// 	else
-// 	{
-// 		philo[i]->fork_right = p->forks[i - 1];
-// 		philo[i]->fork_left = p->forks[i];
-// 	}
-// }
 
 void	init_mutex(void)
 {
@@ -62,7 +48,15 @@ void	init_philo(t_philo *p, char **av, int ac)
 		p->philo[i].time_to_eat = ft_atoi(av[3]);
 		p->philo[i].time_to_sleep = ft_atoi(av[4]);
 		p->philo[i].st = scratch_balls;
-		p->philo[i].fork_left = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
-		p->philo[i].fork_rigth = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+		if (i == 0)
+		{
+			p->philo[i].fork_left = &p->forks[p->nmr_p - 1];
+			p->philo[i].fork_rigth = &p->forks[0];
+		}
+		else
+		{
+			p->philo[i].fork_left = &p->forks[i - 1];
+			p->philo[i].fork_rigth = &p->forks[i];
+		}
 	}
 }
