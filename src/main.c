@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/15 22:11:51 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/17 01:48:33 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ long	get_start_time()
 	struct	timeval beg;
 	
 	gettimeofday(&beg, NULL);
-	
+	return(32);	
 }
 
 void	print_states(int id, t_state st)

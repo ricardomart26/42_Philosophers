@@ -4,6 +4,7 @@
 		"string": "c",
 		"__locale": "c",
 		"philo.h": "c",
-		"optional": "c"
+		"optional": "c",
+		"so_long.h": "c"
 	}
 }

@@ -6,9 +6,11 @@
 #    By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/24 20:16:53 by rimartin          #+#    #+#              #
-#    Updated: 2021/03/09 18:10:39 by rimartin         ###   ########.fr        #
+#    Updated: 2021/09/17 02:02:00 by rimartin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+MAKEFLAGS += -s
 
 NAME 	= 	libft.a
 
@@ -71,17 +73,17 @@ HEADER	= libft.h
 all		: $(NAME)
 
 $(NAME) : $(OBJ)
-			@ar rcs $@ $^
-			@ranlib $(NAME)
+			ar -rcs $@ $^
+									ranlib $(NAME)
 
 bonus	: $(OBJBON) $(OBJ)
-			@ar -rcs $(NAME) $(OBJBON) $(OBJ)
+			ar -rcs $(NAME) $(OBJBON) $(OBJ)
 
 clean	:
-			@rm -f $(OBJ) $(OBJBON)
+			rm -f $(OBJ) $(OBJBON)
 
 fclean	: clean
-			@rm -f $(NAME)
+			rm -f $(NAME)
 
 re		: fclean $(NAME)
 

@@ -1,6 +1,6 @@
-MAKEFLAGS += --quiet
+MAKEFLAGS += -s
 
-CC = gcc -Wall -Werror -Wextra
+CC = gcc 
 
 SRC = $(wildcard src/*.c)
 
@@ -24,7 +24,6 @@ OBJ = $(SRC:%.c=%.o)
 $(NAME): $(DEPS) $(OBJ)
 	$(MAKE) bonus -C libft
 	$(CC) $(INC) -o $(NAME) $(OBJ) $(LIBS)
-
 
 all: $(NAME)
 
