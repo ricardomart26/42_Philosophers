@@ -1,18 +1,18 @@
 MAKEFLAGS += --quiet
 
-CC = gcc -Wall -Werror -Wextra
+CC = gcc -Wall -Werror -Wextra -fsanitize=address -g
 
 SRC = $(wildcard src/*.c)
 
-LIBFT = libft
+LIBFT = Libft/includes
 
-HEADERS = include
+HEADERS = includes
 
 DEPS = $(shell find $(HEADERS) -name *.h)
 
 INC = -I $(HEADERS) -I $(LIBFT)
 
-LIBS = -L./$(LIBFT) -lft
+LIBS = -L./Libft -lft
 
 NAME = philo
 
@@ -22,11 +22,8 @@ OBJ = $(SRC:%.c=%.o)
 	$(CC) $(INC) -o $@ -c $<
 	
 $(NAME): $(DEPS) $(OBJ)
-	$(MAKE) bonus -C libft
-	# mv libft/libft.a .
+	$(MAKE) -C Libft
 	$(CC) $(INC) -o $(NAME) $(OBJ) $(LIBS)
-	# $(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS)
-
 
 all: $(NAME)
 
