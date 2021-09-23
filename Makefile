@@ -1,8 +1,10 @@
 MAKEFLAGS += -s
 
-CC = gcc 
+CC = gcc -Wall -Werror -Wextra
 
 SRC = $(wildcard src/*.c)
+
+LIBFT_INC = libft/includes
 
 LIBFT = libft
 
@@ -10,7 +12,7 @@ HEADERS = include
 
 DEPS = $(shell find $(HEADERS) -name *.h)
 
-INC = -I $(HEADERS) -I $(LIBFT)
+INC = -I $(HEADERS) -I $(LIBFT_INC)
 
 LIBS = -L./$(LIBFT) -lft
 
@@ -22,7 +24,7 @@ OBJ = $(SRC:%.c=%.o)
 	$(CC) $(INC) -o $@ -c $<
 	
 $(NAME): $(DEPS) $(OBJ)
-	$(MAKE) bonus -C libft
+	$(MAKE) -C libft
 	$(CC) $(INC) -o $(NAME) $(OBJ) $(LIBS)
 
 all: $(NAME)

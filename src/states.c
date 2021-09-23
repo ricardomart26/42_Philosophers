@@ -6,13 +6,11 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/15 22:11:28 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/24 00:05:03 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int g_semaphore = 0;
 
 void	remove_fork(t_info *p)
 {
@@ -21,14 +19,21 @@ void	remove_fork(t_info *p)
 	p->st = sleeping;
 }
 
-void	stop_eating(t_info *p)
+long	stop_eating(t_info *p)
 {
+	long	time_passed;	
+
+	time_passed = 0;
 	if (*p->fork_left == true && *p->fork_rigth == true)
 	{
+		time_passed = check_death_while_eating(p);
 		remove_fork(p);
+		pthread_mutex_lock(&g_lock_write);
 		printf("%ld: %d is sleeping\n", get_time(), p->id);
-		usleep(p->time_to_sleep);
+		pthread_mutex_unlock(&g_lock_write);
+		time_passed = check_death_while_sleeping(p, time_passed);
 	}
+	return (time_passed);
 }
 
 static	void	assign_fork(t_info *p)
@@ -38,35 +43,47 @@ static	void	assign_fork(t_info *p)
 	p->st = eating;
 }
 
-void	start_eating(t_info *p)
+long	check_death(long time_passed, t_info *p)
 {
-	long	current;
-
-	current = get_time();
+	if (time_passed >= g_args.time_to_die)
+	{
+		pthread_mutex_lock(&g_lock_write);
+		p->st = is_dead;
+		printf("%ld: %d is dead\n", get_time() - 10, p->id);
+		exit(0);
+	}
+	usleep(6);
+	time_passed += 10;
+	return (time_passed);
 }
 
-void	give_forks(t_info *p)
+void	how_many_times_eat(t_info *p)
 {
-	if (p->time_to_die < p->time_to_eat + p->time_to_sleep)
+	p->c_eat++;
+	if (p->c_eat == g_args.how_many_times_to_eat)
 	{
-		p->st = is_dead;
-		return ;
+		pthread_mutex_lock(&g_lock_write);
+		printf("%ld: %d as eaten %d\n", get_time(), p->id, p->c_eat);
+		exit(0);
 	}
+}
+
+void	give_forks(t_info *p, long time_passed)
+{
+	while (*p->fork_left == true || *p->fork_rigth == true)
+		time_passed = check_death(time_passed, p);
 	pthread_mutex_lock(&g_lock);
 	if (*p->fork_left == false && *p->fork_rigth == false)
 	{
 		assign_fork(p);
-		p->st = eating;
+		p->started_eating = get_time();
 		printf("%ld: %d has taken a fork\n", get_time(), p->id);
 		printf("%ld: %d has taken a fork\n", get_time(), p->id);
-		printf("time to eat %d\n", p->time_to_eat);
-		start_eating(p);
+		printf("%ld: %d is eating\n", get_time(), p->id);
+		if (g_args.how_many_times_to_eat != -1)
+			how_many_times_eat(p);
+		pthread_mutex_unlock(&g_lock);
 	}
-	pthread_mutex_unlock(&g_lock);
-}
-
-void	think(t_info *p)
-{
-	p->st = thinking;
-	printf("%ld: %d is thinking\n", get_time(), p->id);
+	else
+		pthread_mutex_unlock(&g_lock);
 }

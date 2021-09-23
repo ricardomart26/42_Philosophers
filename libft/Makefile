@@ -6,87 +6,104 @@
 #    By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/24 20:16:53 by rimartin          #+#    #+#              #
-#    Updated: 2021/09/17 02:02:00 by rimartin         ###   ########.fr        #
+#    Updated: 2021/09/23 23:33:38 by rimartin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-MAKEFLAGS += -s
-
 NAME 	= 	libft.a
 
-BUILD_PRINT = \e[1;34mBuilding $<\e[0m
+SRC		= 	mem/ft_bzero.c \
+			mem/ft_calloc.c \
+			mem/ft_memccpy.c \
+			mem/ft_memchr.c \
+			mem/ft_memcmp.c \
+			mem/ft_memcpy.c \
+			mem/ft_memmove.c \
+			mem/ft_memset.c \
+			validation/ft_isalnum.c \
+			validation/ft_isalpha.c \
+			validation/ft_isascii.c \
+			validation/ft_isdigit.c \
+			validation/ft_isprint.c \
+			validation/check_ext.c \
+			print/ft_putchar_fd.c \
+			print/ft_putendl_fd.c \
+			print/ft_putnbr_fd.c \
+			print/ft_putstr_fd.c \
+			print/error_msg.c \
+			strings/ft_strchr.c \
+			strings/ft_split.c \
+			strings/ft_strdup.c \
+			strings/ft_strjoin.c \
+			strings/ft_strlcat.c \
+			strings/ft_strlcpy.c \
+			strings/ft_strlen.c \
+			strings/ft_strmapi.c \
+			strings/ft_strncmp.c \
+			strings/ft_strnstr.c \
+			strings/ft_strrchr.c \
+			strings/ft_strtrim.c \
+			strings/ft_substr.c \
+			strings/ft_tolower.c \
+			strings/ft_toupper.c \
+			strings/strjoin3.c \
+			strings/search_word.c \
+			list/ft_lstadd_back.c \
+		    list/ft_lstadd_front.c \
+		    list/ft_lstclear.c \
+		    list/ft_lstdelone.c \
+		    list/ft_lstiter.c \
+		    list/ft_lstlast.c \
+		    list/ft_lstmap.c \
+		    list/ft_lstnew.c \
+		    list/ft_lstsize.c \
+			conv/ft_itoa.c \
+			conv/ft_atoi.c \
+			conv/atoh.c \
+			env/path_env.c \
+			math/check_range.c \
+			files/get_next_line_bonus.c \
 
-SRC		= 	ft_atoi.c \
-			ft_bzero.c \
-			ft_calloc.c \
-			ft_isalnum.c \
-			ft_isalpha.c \
-			ft_isascii.c \
-			ft_isdigit.c \
-			ft_isprint.c \
-			ft_itoa.c \
-			ft_memccpy.c \
-			ft_memchr.c \
-			ft_memcmp.c \
-			ft_memcpy.c \
-			ft_memmove.c \
-			ft_memset.c \
-			ft_strchr.c \
-			ft_putchar_fd.c \
-			ft_putendl_fd.c \
-			ft_putnbr_fd.c \
-			ft_putstr_fd.c \
-			ft_split.c \
-			ft_strchr.c \
-			ft_strdup.c \
-			ft_strjoin.c \
-			ft_strlcat.c \
-			ft_strlcpy.c \
-			ft_strlen.c \
-			ft_strmapi.c \
-			ft_strncmp.c \
-			ft_strnstr.c \
-			ft_strrchr.c \
-			ft_strtrim.c \
-			ft_substr.c \
-			ft_tolower.c \
-			ft_toupper.c \
 
-SRCBON 	=  ft_lstadd_back.c \
-		   ft_lstadd_front.c \
-		   ft_lstclear.c \
-		   ft_lstdelone.c \
-		   ft_lstiter.c \
-		   ft_lstlast.c \
-		   ft_lstmap.c \
-		   ft_lstnew.c \
-		   ft_lstsize.c \
+SRC_NEXT = files/get_next_line_bonus.c
+DEPS_GET = $(shell find $(HEADER_GET) -name *.h)
+HEADER_GET = files
 
-OBJ 	= $(SRC:.c=.o)
+REMOVE_OBJ = $(shell find . -name *.o)
 
-OBJBON 	= $(SRCBON:.c=.o)
+DEPS = $(shell find $(HEADER) -name *.h)
 
-CC		= gcc -Wall -Werror -Wextra -I.
+OBJ 	= $(SRC:%.c=%.o)
 
-HEADER	= libft.h
+CC		= gcc -Wall -Werror -Wextra -I $(HEADER)
 
+OBJ_DIR = Objs
+
+HEADER	= includes
+
+INCLUDES = -I $(HEADER) -I $(HEADER_GET)
+
+LIBS = -L./$(HEADER) -lft
+
+Objs/%.o: %.c
+	$(CC) $(INCLUDES) -c -o $@ $<
+	
 all		: $(NAME)
 
-$(NAME) : $(OBJ)
-			ar -rcs $@ $^
-									ranlib $(NAME)
-
-bonus	: $(OBJBON) $(OBJ)
-			ar -rcs $(NAME) $(OBJBON) $(OBJ)
+$(NAME) : $(OBJ) $(DEPS) $(DEPS_GET)
+			mkdir -p Objs
+			mv $(OBJ) Objs
+			ar rcs $@ Objs/*.o
 
 clean	:
-			rm -f $(OBJ) $(OBJBON)
+			rm -f Objs/*.o
 
-fclean	: clean
+fup:
+			rm -f $(REMOVE_OBJ)
+
+fclean	: clean fup
 			rm -f $(NAME)
 
 re		: fclean $(NAME)
 
-rebonus	: fclean bonus
-
-.PHONY: all clean bonus clean fclean re rebonus
+.PHONY: all clean fclean re
