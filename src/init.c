@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/09 02:41:45 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/24 00:00:25 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/29 22:26:15 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,34 @@ void	init_args(int ac, char **av)
 		g_args.how_many_times_to_eat = -1;
 }
 
-void	init_mutex(void)
+void	init_mutex(t_philo *p)
 {
+	int	i;
+
+	i = -1;
 	g_lock = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	g_lock2 = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	g_write_kill = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	g_lock_write = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	while (++i < p->nmr_p)
+		p->forks_m[i] = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 }
 
 void	init_forks(t_philo *p, int i)
 {
 	if (i == 0)
 	{
-		p->philo[i].fork_left = &p->forks[p->nmr_p - 1];
-		p->philo[i].fork_rigth = &p->forks[0];
+		p->philo[i].left_fork_m = &p->forks_m[0];
+		p->philo[i].rigth_fork_m = &p->forks_m[p->nmr_p - 1];
+		p->philo[i].fork_left = &p->forks[0];
+		p->philo[i].fork_rigth = &p->forks[p->nmr_p - 1];
 	}
 	else
 	{
-		p->philo[i].fork_left = &p->forks[i - 1];
-		p->philo[i].fork_rigth = &p->forks[i];
+		p->philo[i].left_fork_m = &p->forks_m[i];
+		p->philo[i].rigth_fork_m = &p->forks_m[i - 1];
+		p->philo[i].fork_left = &p->forks[i];
+		p->philo[i].fork_rigth = &p->forks[i - 1];
 	}
 }
 
@@ -57,7 +66,8 @@ void	init_philo(t_philo *p)
 	if (p->philo == NULL)
 		return ;
 	p->forks = ft_calloc(p->nmr_p, sizeof(bool));
-	init_mutex();
+	p->forks_m = ft_calloc(p->nmr_p, sizeof(pthread_mutex_t));
+	init_mutex(p);
 	i = -1;
 	while (++i < p->nmr_p)
 	{

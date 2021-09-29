@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/24 00:05:03 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/29 22:29:28 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ long	stop_eating(t_info *p)
 	{
 		time_passed = check_death_while_eating(p);
 		remove_fork(p);
+		pthread_mutex_unlock(p->left_fork_m);
+		pthread_mutex_unlock(p->rigth_fork_m);
 		pthread_mutex_lock(&g_lock_write);
 		printf("%ld: %d is sleeping\n", get_time(), p->id);
 		pthread_mutex_unlock(&g_lock_write);
@@ -76,6 +78,8 @@ void	give_forks(t_info *p, long time_passed)
 	if (*p->fork_left == false && *p->fork_rigth == false)
 	{
 		assign_fork(p);
+		pthread_mutex_lock(p->left_fork_m);
+		pthread_mutex_lock(p->rigth_fork_m);
 		p->started_eating = get_time();
 		printf("%ld: %d has taken a fork\n", get_time(), p->id);
 		printf("%ld: %d has taken a fork\n", get_time(), p->id);

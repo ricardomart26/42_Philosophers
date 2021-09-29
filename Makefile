@@ -4,17 +4,11 @@ CC = gcc -Wall -Werror -Wextra
 
 SRC = $(wildcard src/*.c)
 
-LIBFT_INC = libft/includes
-
-LIBFT = libft
-
 HEADERS = include
 
 DEPS = $(shell find $(HEADERS) -name *.h)
 
-INC = -I $(HEADERS) -I $(LIBFT_INC)
-
-LIBS = -L./$(LIBFT) -lft
+INC = -I $(HEADERS)
 
 NAME = philo
 
@@ -24,17 +18,14 @@ OBJ = $(SRC:%.c=%.o)
 	$(CC) $(INC) -o $@ -c $<
 	
 $(NAME): $(DEPS) $(OBJ)
-	$(MAKE) -C libft
-	$(CC) $(INC) -o $(NAME) $(OBJ) $(LIBS)
+	$(CC) $(INC) -o $(NAME) $(OBJ)
 
 all: $(NAME)
 
 clean:
-	$(MAKE) clean -C libft
 	rm -f $(OBJ)
 
 fclean: clean
-	$(MAKE) fclean -C libft
 	rm -f libft.a
 	rm -f $(NAME)
 

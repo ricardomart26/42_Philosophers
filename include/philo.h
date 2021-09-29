@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/24 00:00:10 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/29 22:24:14 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <stdlib.h>
-# include "libft.h"
 
 # define THREAD_LIMIT 100
 
@@ -49,6 +48,8 @@ typedef struct s_info
 	t_state		st;
 	long		started_eating;
 	int			c_eat;
+	pthread_mutex_t	*left_fork_m;
+	pthread_mutex_t	*rigth_fork_m;
 }	t_info;
 
 typedef struct s_args
@@ -66,10 +67,13 @@ typedef struct s_philo
 	t_info			*philo;
 	bool			*forks;
 	int				nmr_p;
+	pthread_mutex_t	*forks_m;
 }	t_philo;
 
 t_args			g_args;
 
+void	*ft_calloc(size_t count, size_t size);
+int		ft_atoi(const char *str);
 long	stop_eating(t_info *p);
 void	init_philo(t_philo *p);
 void	init_args(int ac, char **av);
