@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/29 22:24:14 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/29 23:37:04 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,20 @@
 
 # define THREAD_LIMIT 100
 
+#define MSG_MAX 4
+
+char	*g_message[MSG_MAX] = {
+	"is eating\n",
+	"is sleeping\n",
+	"is thinking\n",
+	"is dead\n"
+};
+
 struct timeval	g_start_time;
 
 pthread_mutex_t	g_lock;
 pthread_mutex_t	g_lock_write;
-pthread_mutex_t	g_lock2;
-pthread_mutex_t	g_write_kill;
+int				g_kill;
 
 typedef enum s_state
 {
@@ -40,14 +48,14 @@ typedef enum s_state
 
 typedef struct s_info
 {
-	int			id;
-	pthread_t	t;
-	long		time;
-	bool		*fork_left;
-	bool		*fork_rigth;
-	t_state		st;
-	long		started_eating;
-	int			c_eat;
+	int				id;
+	pthread_t		t;
+	long			time;
+	bool			*fork_left;
+	bool			*fork_rigth;
+	t_state			st;
+	long			started_eating;
+	int				c_eat;
 	pthread_mutex_t	*left_fork_m;
 	pthread_mutex_t	*rigth_fork_m;
 }	t_info;
@@ -72,6 +80,7 @@ typedef struct s_philo
 
 t_args			g_args;
 
+void	printer(int id, t_state state);
 void	*ft_calloc(size_t count, size_t size);
 int		ft_atoi(const char *str);
 long	stop_eating(t_info *p);
@@ -79,7 +88,7 @@ void	init_philo(t_philo *p);
 void	init_args(int ac, char **av);
 long	calculate_time(long time);
 long	get_time(void);
-void	give_forks(t_info *p, long time_passed);
+int		give_forks(t_info *p, long time_passed);
 long	check_death_while_sleeping(t_info *p, long time_passed);
 long	check_death_while_eating(t_info *p);
 long	check_death(long time_passed, t_info *p);
