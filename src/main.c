@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/24 00:00:46 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/09/29 22:32:25 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,13 @@ int	main(int ac, char **av)
 	init_philo(&p);
 	if (p.nmr_p < 1)
 		exit(0);
+	else if (p.nmr_p == 1)
+	{
+		printf("%d: %d is dead", g_args.time_to_die / 1000, 1);
+		free(p.forks);
+		free(p.philo);
+		return (0);
+	}
 	i = -1;
 	while (++i < p.nmr_p)
 		pthread_create(&p.philo[i].t, NULL, main_funct, &p.philo[i]);
