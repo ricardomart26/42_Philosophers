@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/29 23:37:04 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/02 02:58:41 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,11 @@
 
 #define MSG_MAX 4
 
-char	*g_message[MSG_MAX] = {
-	"is eating\n",
-	"is sleeping\n",
-	"is thinking\n",
-	"is dead\n"
-};
 
 struct timeval	g_start_time;
 
 pthread_mutex_t	g_lock;
 pthread_mutex_t	g_lock_write;
-int				g_kill;
 
 typedef enum s_state
 {
@@ -80,6 +73,7 @@ typedef struct s_philo
 
 t_args			g_args;
 
+void	*unlock_eve(t_info *p);
 void	printer(int id, t_state state);
 void	*ft_calloc(size_t count, size_t size);
 int		ft_atoi(const char *str);

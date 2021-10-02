@@ -6,11 +6,20 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:14 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/29 23:36:51 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/02 03:04:32 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+char	*g_message[MSG_MAX] = {
+	"is eating\n",
+	"is sleeping\n",
+	"is thinking\n",
+	"is dead\n"
+};
+
+int				g_kill;
 
 void	printer(int id, t_state state)
 {
@@ -19,10 +28,12 @@ void	printer(int id, t_state state)
 	pthread_mutex_unlock(&g_lock_write);
 }
 
-void	*unlock_eve()
+void	*unlock_eve(t_info *p)
 {
 	pthread_mutex_unlock(&g_lock);
 	pthread_mutex_unlock(&g_lock_write);
+	pthread_mutex_unlock(&(*p->left_fork_m));
+	pthread_mutex_unlock(&(*p->rigth_fork_m));
 	return (NULL);
 }
 
@@ -34,12 +45,16 @@ void	*routine(void	*arg)
 	philo = *(t_info *)arg;
 	while (philo.st != is_dead)
 	{
+		if (g_kill == 1)
+			return(unlock_eve(&philo));
 		while (philo.st != eating)
-			if (!give_forks(&philo, time_passed))
+			if (give_forks(&philo, time_passed) == -1)
 				return (NULL);
 		if (g_kill == 1)
-			return(unlock_eve());
+			return(unlock_eve(&philo));
 		time_passed = stop_eating(&philo);
+		if (time_passed == 0)
+			return (NULL);
 		philo.st = thinking;
 		printer(philo.id, philo.st);
 	}

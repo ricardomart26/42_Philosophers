@@ -6,11 +6,14 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:03 by rimartin          #+#    #+#             */
-/*   Updated: 2021/09/23 23:57:54 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/02 03:12:22 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int				g_kill;
+
 
 long	get_time(void)
 {
@@ -30,7 +33,11 @@ long	check_death_while_eating(t_info *p)
 
 	time_passed = 0;
 	while (time_passed <= g_args.time_to_eat)
+	{
 		time_passed = check_death(time_passed, p);
+		if (time_passed == -1)
+			return (-1);
+	}
 	return (time_passed);
 }
 
@@ -46,10 +53,12 @@ long	check_death_while_sleeping(t_info *p, long time_passed)
 			pthread_mutex_lock(&g_lock_write);
 			p->st = is_dead;
 			printf("%ld: %d is dead\n", get_time(), p->id);
-			exit(0);
+			return (-1);
 		}
 		usleep(7);
 		counter += 10;
+		if (g_kill == 1)
+			return (-1);
 	}
 	return (counter + time_passed);
 }
