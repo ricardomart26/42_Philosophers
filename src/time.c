@@ -6,13 +6,11 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:03 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 19:08:33 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/03 20:51:59 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int				g_kill;
 
 long	get_time(void)
 {
@@ -51,11 +49,14 @@ long	check_death_while_sleeping(t_info *p, long time_passed)
 		{
 			pthread_mutex_lock(&g_lock_write);
 			p->st = is_dead;
+			g_args.kill = 1;
 			printf("%ld: %d is dead\n", get_time(), p->id);
 			return (-1);
 		}
 		usleep(6);
 		counter += 10;
 	}
+	if (g_args.kill == 1)
+		return (-1);
 	return (counter + time_passed);
 }

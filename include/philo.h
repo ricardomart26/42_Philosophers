@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 19:11:18 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/03 21:11:33 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # define MSG_MAX 4
 
 struct timeval	g_start_time;
-
 pthread_mutex_t	g_lock;
 pthread_mutex_t	g_lock_write;
 
@@ -41,7 +40,6 @@ typedef struct s_info
 {
 	int				id;
 	pthread_t		t;
-	long			time;
 	bool			*fork_left;
 	bool			*fork_rigth;
 	t_state			st;
@@ -59,19 +57,20 @@ typedef struct s_args
 	int	how_many_times_to_eat;
 	int	time_to_eat;
 	int	nbr_philo;
+	int	kill;
+	int	full;
 }	t_args;
 
 typedef struct s_philo
 {
 	t_info			*philo;
 	bool			*forks;
-	int				nbr_p;
 	pthread_mutex_t	*forks_m;
 }	t_philo;
 
 t_args			g_args;
 
-void	*unlock_eve(t_info *p);
+t_info	*unlock_eve(t_info *p);
 void	printer(int id, t_state state);
 void	*ft_calloc(size_t count, size_t size);
 int		ft_atoi(const char *str);
