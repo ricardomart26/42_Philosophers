@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/02 06:27:18 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/03 19:01:45 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ long	check_death(long time_passed, t_info *p)
 	{
 		if (g_kill == 1)
 			return (-1);
-		g_kill = 1;
 		p->st = is_dead;
 		printer(p->id, p->st);
+		g_kill = 1;
 		pthread_mutex_lock(&g_lock_write);
 		return (-1);
 	}
@@ -56,8 +56,7 @@ long	check_death(long time_passed, t_info *p)
 
 int	how_many_times_eat(t_info *p)
 {
-	p->c_eat++;
-	if (p->c_eat == g_args.how_many_times_to_eat)
+	if (++p->c_eat == g_args.how_many_times_to_eat)
 	{
 		pthread_mutex_lock(&g_lock_write);
 		printf("%ld: %d as eaten %d\n", get_time(), p->id, p->c_eat);
@@ -66,21 +65,11 @@ int	how_many_times_eat(t_info *p)
 	return (0);
 }
 
-void	fork_printer(int id, t_state st, t_info *p)
+void	fork_printer(int id, t_state st)
 {
-	if (g_kill == 1)
-	{
-		unlock_eve(p);
-		return ;
-	}
 	printf("%ld: %d has taken a fork\n", get_time(), id);
 	printf("%ld: %d has taken a fork\n", get_time(), id);
 	printer(id, st);
-	if (g_kill == 1)
-	{
-		unlock_eve(p);
-		return ;
-	}
 }
 
 int	give_forks(t_info *p, long time_passed)
@@ -92,11 +81,6 @@ int	give_forks(t_info *p, long time_passed)
 			return (-1);
 	}
 	pthread_mutex_lock(&g_lock);
-	if (g_kill == 1)
-	{
-		unlock_eve(p);
-		return (-1);
-	}
 	if (*p->fork_left == false && *p->fork_rigth == false)
 	{
 		*p->fork_left = true;
@@ -104,21 +88,11 @@ int	give_forks(t_info *p, long time_passed)
 		p->st = eating;
 		pthread_mutex_lock(&(*p->left_fork_m));
 		pthread_mutex_lock(&(*p->rigth_fork_m));
-		if (g_kill == 1)
-		{	
-			unlock_eve(p);
-			return (-1);
-		}
 		p->started_eating = get_time();
-		fork_printer(p->id, p->st, p);
+		fork_printer(p->id, p->st);
 		if (g_args.how_many_times_to_eat != -1)
 			return (how_many_times_eat(p));
 	}
 	pthread_mutex_unlock(&g_lock);
-	if (g_kill == 1)
-	{
-		unlock_eve(p);
-		return (-1);
-	}
 	return (1);
 }

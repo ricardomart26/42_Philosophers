@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/02 02:58:41 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/03 19:11:18 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@
 # include <stdbool.h>
 # include <stdlib.h>
 
-# define THREAD_LIMIT 100
-
-#define MSG_MAX 4
-
+# define THREAD_LIMIT 200
+# define MSG_MAX 4
 
 struct timeval	g_start_time;
 
@@ -67,7 +65,7 @@ typedef struct s_philo
 {
 	t_info			*philo;
 	bool			*forks;
-	int				nmr_p;
+	int				nbr_p;
 	pthread_mutex_t	*forks_m;
 }	t_philo;
 

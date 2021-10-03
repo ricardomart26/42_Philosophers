@@ -1,6 +1,6 @@
 MAKEFLAGS += -s
 
-CC = gcc -Wall -Werror -Wextra
+CC = gcc -Wall -Werror -Wextra -fsanitize=address
 
 SRC = $(wildcard src/*.c)
 
