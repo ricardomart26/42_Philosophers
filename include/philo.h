@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/19 17:19:55 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/19 18:39:49 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@
 # define THREAD_LIMIT 200
 # define MSG_MAX 4
 
-struct timeval	g_start_time;
-pthread_mutex_t	g_lock;
-pthread_mutex_t	g_lock_write;
+static struct timeval	g_start_time;
+static pthread_mutex_t	g_lock;
+static pthread_mutex_t	g_lock_write;
+static t_args			g_args;
 
 typedef enum s_state
 {
@@ -68,8 +69,6 @@ typedef struct s_philo
 	bool			*forks;
 	pthread_mutex_t	*forks_m;
 }	t_philo;
-
-t_args			g_args;
 
 t_info	*unlock_eve(t_info *p);
 void	printer(int id, t_state state);
