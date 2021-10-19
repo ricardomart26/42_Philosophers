@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/09 02:41:45 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 20:56:00 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:22:17 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	init_args(int ac, char **av)
 	g_args.nbr_philo = ft_atoi(av[1]);
 	g_args.full = 0;
 	g_args.kill = 0;
-	g_args.time_to_die = ft_atoi(av[2]) * 1000;
-	g_args.time_to_eat = ft_atoi(av[3]) * 1000;
-	g_args.time_to_sleep = ft_atoi(av[4]) * 1000;
+	g_args.time_to_die = ft_atoi(av[2]);
+	g_args.time_to_eat = ft_atoi(av[3]);
+	g_args.time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 		g_args.how_many_times_to_eat = ft_atoi(av[5]);
 	else
@@ -71,6 +71,7 @@ void	init_philo(t_philo *p)
 		p->philo[i].id = i + 1;
 		p->philo[i].c_eat = 0;
 		p->philo[i].started_eating = 0;
+		p->philo[i].started_sleeping = 0;
 		p->philo[i].st = scratch_balls;
 		init_forks(p, i);
 	}

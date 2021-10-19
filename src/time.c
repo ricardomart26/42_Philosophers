@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:03 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 20:51:59 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:34:47 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,28 +24,11 @@ long	get_time(void)
 	+ ((beg.tv_usec - g_start_time.tv_usec) / 1000));
 }
 
-long	check_death_while_eating(t_info *p)
+int	check_death_while_eating(t_info *p)
 {
-	long	time_passed;
-
-	time_passed = 40;
-	while (time_passed <= g_args.time_to_eat)
+	while (get_time() - p->started_eating <= g_args.time_to_eat)
 	{
-		time_passed = check_death(time_passed, p);
-		if (time_passed == -1)
-			return (-1);
-	}
-	return (time_passed);
-}
-
-long	check_death_while_sleeping(t_info *p, long time_passed)
-{
-	long	counter;
-
-	counter = 40;
-	while (counter <= g_args.time_to_sleep)
-	{
-		if (counter + time_passed >= g_args.time_to_die)
+		if (get_time() - p->started_eating >= g_args.time_to_die)
 		{
 			pthread_mutex_lock(&g_lock_write);
 			p->st = is_dead;
@@ -53,10 +36,38 @@ long	check_death_while_sleeping(t_info *p, long time_passed)
 			printf("%ld: %d is dead\n", get_time(), p->id);
 			return (-1);
 		}
-		usleep(6);
-		counter += 10;
+	}
+	return (0);
+}
+
+int	check_death_while_sleeping(t_info *p)
+{
+	while (get_time() - p->started_sleeping <= g_args.time_to_sleep)
+	{
+		if (get_time() - p->started_eating >= g_args.time_to_die)
+		{
+			pthread_mutex_lock(&g_lock_write);
+			p->st = is_dead;
+			g_args.kill = 1;
+			printf("%ld: %d is dead\n", get_time(), p->id);
+			return (-1);
+		}
 	}
 	if (g_args.kill == 1)
 		return (-1);
-	return (counter + time_passed);
+	return (0);
+}
+
+int	check_death(t_info *p)
+{
+	if (get_time() - p->started_eating >= g_args.time_to_die)
+	{
+		p->st = is_dead;
+		printer(p->id, p->st);
+		if (g_args.kill == 1)
+			return (-1);
+		g_args.kill = 1;
+		return (-1);
+	}
+	return (0);
 }

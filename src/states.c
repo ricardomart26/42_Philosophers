@@ -6,18 +6,15 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 05:58:08 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 21:09:02 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:26:53 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	stop_eating(t_info *p)
+int	stop_eating(t_info *p)
 {
-	long	time_passed;	
-
-	time_passed = check_death_while_eating(p);
-	if (g_args.kill == 1)
+	if (check_death_while_eating(p) == -1 || g_args.kill == 1)
 	{
 		pthread_mutex_unlock(&g_lock_write);
 		return (-1);
@@ -25,27 +22,16 @@ long	stop_eating(t_info *p)
 	*p->fork_left = false;
 	*p->fork_rigth = false;
 	p->st = sleeping;
+	p->started_sleeping = get_time();
 	pthread_mutex_unlock(p->left_fork_m);
 	pthread_mutex_unlock(p->rigth_fork_m);
 	printer(p->id, p->st);
-	time_passed = check_death_while_sleeping(p, time_passed);
-	return (time_passed);
-}
-
-long	check_death(long time_passed, t_info *p)
-{
-	if (time_passed >= g_args.time_to_die)
+	if (check_death_while_sleeping(p) == -1)
 	{
-		p->st = is_dead;
-		printer(p->id, p->st);
-		if (g_args.kill == 1)
-			return (-1);
-		g_args.kill = 1;
+		pthread_mutex_unlock(&g_lock_write);
 		return (-1);
 	}
-	usleep(6);
-	time_passed += 10;
-	return (time_passed);
+	return (0);
 }
 
 int	how_many_times_eat(t_info *p)
@@ -85,14 +71,11 @@ int	check_full_and_dead(t_info *p)
 	return (1);
 }
 
-int	give_forks(t_info *p, long time_passed)
+int	give_forks(t_info *p)
 {
 	while (*p->fork_left == true || *p->fork_rigth == true)
-	{
-		time_passed = check_death(time_passed, p);
-		if (time_passed == -1 || g_args.kill == 1)
+		if (check_death(p) == -1 || g_args.kill == 1)
 			return (-1);
-	}
 	pthread_mutex_lock(&g_lock);
 	if (*p->fork_left == false && *p->fork_rigth == false)
 	{

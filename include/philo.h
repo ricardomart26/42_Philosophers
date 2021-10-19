@@ -6,7 +6,7 @@
 /*   By: rimartin <rimartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 23:11:21 by rimartin          #+#    #+#             */
-/*   Updated: 2021/10/03 21:11:33 by rimartin         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:19:55 by rimartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_info
 	bool			*fork_rigth;
 	t_state			st;
 	long			started_eating;
+	long			started_sleeping;
 	int				c_eat;
 	pthread_mutex_t	*left_fork_m;
 	pthread_mutex_t	*rigth_fork_m;
@@ -74,14 +75,14 @@ t_info	*unlock_eve(t_info *p);
 void	printer(int id, t_state state);
 void	*ft_calloc(size_t count, size_t size);
 int		ft_atoi(const char *str);
-long	stop_eating(t_info *p);
+int		stop_eating(t_info *p);
 void	init_philo(t_philo *p);
 void	init_args(int ac, char **av);
 long	calculate_time(long time);
 long	get_time(void);
-int		give_forks(t_info *p, long time_passed);
-long	check_death_while_sleeping(t_info *p, long time_passed);
-long	check_death_while_eating(t_info *p);
-long	check_death(long time_passed, t_info *p);
+int		give_forks(t_info *p);
+int		check_death_while_sleeping(t_info *p);
+int		check_death_while_eating(t_info *p);
+int		check_death(t_info *p);
 
 #endif
