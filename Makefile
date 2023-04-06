@@ -1,10 +1,13 @@
-MAKEFLAGS += -s
+# MAKEFLAGS += -s
 
-CC = gcc -Wall -Werror -Wextra -fsanitize=address
+CC = gcc
+
+HEADERS = include
+
+CFLAGS = -Wall -Werror -Wextra -I $(HEADERS)
 
 SRC = $(wildcard src/*.c)
 
-HEADERS = include
 
 DEPS = $(shell find $(HEADERS) -name *.h)
 
@@ -14,10 +17,10 @@ NAME = philo
 
 OBJ = $(SRC:%.c=%.o)
 
-%.o : %.c
-	$(CC) $(INC) -o $@ -c $<
+# %.o : %.c
+# 	$(CC) $(INC) -o $@ -c $<
 	
-$(NAME): $(DEPS) $(OBJ)
+$(NAME): $(OBJ) $(DEPS) 
 	$(CC) $(INC) -o $(NAME) $(OBJ)
 
 all: $(NAME)

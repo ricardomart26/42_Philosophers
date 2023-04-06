@@ -23,11 +23,6 @@
 # define THREAD_LIMIT 200
 # define MSG_MAX 4
 
-static struct timeval	g_start_time;
-static pthread_mutex_t	g_lock;
-static pthread_mutex_t	g_lock_write;
-static t_args			g_args;
-
 typedef enum s_state
 {
 	scratch_balls,
@@ -63,12 +58,19 @@ typedef struct s_args
 	int	full;
 }	t_args;
 
+
 typedef struct s_philo
 {
 	t_info			*philo;
 	bool			*forks;
 	pthread_mutex_t	*forks_m;
 }	t_philo;
+
+
+struct timeval *get_start_time(void);
+pthread_mutex_t *get_lock(void);
+pthread_mutex_t *get_lock_write(void);
+t_args *get_args(void);
 
 t_info	*unlock_eve(t_info *p);
 void	printer(int id, t_state state);
