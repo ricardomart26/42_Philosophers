@@ -26,6 +26,4 @@ For example, to run a simulation with 5 philosophers who each must eat 7 times b
 
 If you're interested in learning more about the dining philosophers problem, or multithreading and synchronization techniques in general, here are a few resources you might find helpful:
 
-    The Dining Philosophers Problem on Wikipedia
-    Synchronization in Operating Systems on GeeksforGeeks
-    Multithreading and Concurrency - A Beginner's Guide on Section.io
+[The Dining Philosophers](https://en.wikipedia.org/wiki/Dining_philosophers_problem) Problem on Wikipedia
