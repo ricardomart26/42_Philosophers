@@ -1,10 +1,10 @@
 # MAKEFLAGS += -s
 
-CC = gcc
+CC = cc
 
 HEADERS = include
 
-CFLAGS = -Wall -Werror -Wextra -I $(HEADERS)
+CFLAGS = -Wall -Werror -Wextra -I $(HEADERS) 
 
 SRC = $(wildcard src/*.c)
 
